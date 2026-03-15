@@ -26,10 +26,9 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 MODEL_PATH = os.path.join(BASE_DIR, "model", "Linear_Svc.pkl")
 TFIDF_PATH = os.path.join(BASE_DIR, "model", "tfidf.pkl")
 DATA_DIR = os.path.join(BASE_DIR, "dataset")
-TRAIN_PATH = os.path.join(DATA_DIR, "train.csv")
-TEST_PATH = os.path.join(DATA_DIR, "test.csv")
+
 STATIC_DIR = os.path.join(BASE_DIR, "static")
-CHART_DIR = os.path.join(STATIC_DIR, "charts")
+
 
 # Load model + TF-IDF
 try:
@@ -81,86 +80,6 @@ def get_probabilities(model, vector):
         except Exception as e:
             print(f"Probability extraction error: {e}")
             return None
-
-
-def load_dataset():
-    """Load train/test CSVs; return combined DataFrame or None on failure."""
-    if not os.path.exists(TRAIN_PATH) or not os.path.exists(TEST_PATH):
-        print("⚠️ Dataset not found. Skipping visualization build.")
-        return None
-    try:
-        df_train = pd.read_csv(TRAIN_PATH, on_bad_lines="skip")
-        df_test = pd.read_csv(TEST_PATH)
-        return pd.concat([df_train, df_test], ignore_index=True)
-    except Exception as exc:
-        print(f"⚠️ Failed to load dataset: {exc}")
-        return None
-
-
-def ensure_chart_dir():
-    try:
-        os.makedirs(CHART_DIR, exist_ok=True)
-    except Exception as exc:
-        print(f"⚠️ Could not create chart directory: {exc}")
-
-
-def save_class_distribution_chart(df):
-    values = df["Class Index"].value_counts().sort_index()
-    labels_map = {1: "World", 2: "Sports", 3: "Business", 4: "Technology"}
-    labels = [labels_map.get(idx, str(idx)) for idx in values.index]
-    explode = [0.05, 0.01, 0.1, 0.03]
-
-    def autopct_format(pct, allvals):
-        absolute = int(round(pct / 100 * sum(allvals)))
-        return f"{pct:.2f}%\n({absolute})"
-
-    fig, ax = plt.subplots(figsize=(6, 4))
-    ax.pie(
-        values,
-        labels=labels,
-        explode=explode[: len(values)],
-        autopct=lambda pct: autopct_format(pct, values),
-        startangle=90,
-        textprops={"fontsize": 9},
-    )
-    ax.set_title("Class Distribution of News Dataset")
-    fig.tight_layout()
-    output_path = os.path.join(CHART_DIR, "class_distribution.png")
-    fig.savefig(output_path, dpi=150)
-    plt.close(fig)
-    return os.path.relpath(output_path, STATIC_DIR).replace(os.sep, "/")
-
-
-def save_top_words_chart(df, class_index, filename):
-    subset = df[df["Class Index"] == class_index]
-    if subset.empty:
-        return None
-
-    processed = subset["Description"].astype(str).apply(preprocess)
-    words = " ".join(processed).split()
-    most_common = Counter(words).most_common(15)
-    if not most_common:
-        return None
-
-    df_common = pd.DataFrame(most_common, columns=["Word", "Count"])
-    label_map = {1: "World", 2: "Sports", 3: "Business", 4: "Technology"}
-    label = label_map.get(class_index, f"Class {class_index}")
-    fig, ax = plt.subplots(figsize=(7, 4))
-    sns.barplot(data=df_common, x="Word", y="Count", palette="viridis", ax=ax)
-    ax.set_title(f"Top Words: {label}")
-    ax.set_xlabel("")
-    ax.set_ylabel("Count")
-    plt.setp(ax.get_xticklabels(), rotation=45, ha="right")
-    fig.tight_layout()
-    output_path = os.path.join(CHART_DIR, filename)
-    fig.savefig(output_path, dpi=150)
-    plt.close(fig)
-    return os.path.relpath(output_path, STATIC_DIR).replace(os.sep, "/")
-
-
-def build_visualizations():
-    """Disabled for deployment: was generating charts from local dataset."""
-    return {}
 
 @app.route("/", methods=["GET", "POST"])
 def index():
