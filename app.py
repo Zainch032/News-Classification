@@ -159,25 +159,8 @@ def save_top_words_chart(df, class_index, filename):
 
 
 def build_visualizations():
-    """Generate chart images from the dataset at startup."""
-    ensure_chart_dir()
-    df = load_dataset()
-    if df is None:
-        return {}
-
-    charts = {}
-    try:
-        charts["class_distribution"] = save_class_distribution_chart(df)
-        charts["business_top_words"] = save_top_words_chart(df, 3, "business_top_words.png")
-        charts["technology_top_words"] = save_top_words_chart(df, 4, "technology_top_words.png")
-    except Exception as exc:
-        print(f"⚠️ Failed to build visualizations: {exc}")
-
-    # Remove entries that failed to generate
-    return {k: v for k, v in charts.items() if v}
-
-
-CHART_FILES = build_visualizations()
+    """Disabled for deployment: was generating charts from local dataset."""
+    return {}
 
 @app.route("/", methods=["GET", "POST"])
 def index():
@@ -222,11 +205,6 @@ def index():
         confidence=confidence,
         input_text=input_text,
     )
-
-
-@app.route("/dashboard", methods=["GET"])
-def dashboard():
-    return render_template("dashboard.html", charts=CHART_FILES)
 
 
 if __name__ == "__main__":
