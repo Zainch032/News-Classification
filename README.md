@@ -1,3 +1,12 @@
+---
+title: News Classification
+emoji: 📰
+colorFrom: blue
+colorTo: red
+sdk: docker
+app_file: app.py
+pinned: false
+---
 ## News Classification App
 
 This project is a Flask-based web application for classifying news articles into categories (World, Sports, Business, Technology). It uses a pre-trained scikit-learn model and TF-IDF vectorizer, and displays simple dataset visualizations using Matplotlib and Seaborn.
