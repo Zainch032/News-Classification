@@ -1,0 +1,12 @@
+# Ignore local datasets so they are not tracked
+dataset/
+app/dataset/
+
+# Common data file formats
+*.csv
+*.xlsx
+*.json
+*.parquet
+*.tsv
+*.db
+*.sqlite"dataset/" 
