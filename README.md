@@ -1,106 +1,75 @@
----
-title: News Classification
-emoji: 📰
-colorFrom: blue
-colorTo: red
-sdk: docker
-app_file: app.py
-pinned: false
----
-
 # 📰 News Multi-Classification System
 
-> End-to-end NLP pipeline that classifies raw news articles into World, Business, Sports and Technology in real time.
+[](https://huggingface.co/spaces/Zainch032/News-Classification)
 
-## 🚀 Live Demo
-Try the deployed app here: [News Classification – Hugging Face Space](https://huggingface.co/spaces/Zainch032/News-Classification)
 
----
+## 🚀 The Problem: Information Overload
 
-## 🎯 What This Project Does
+In the modern digital age, thousands of news articles are published every minute. Manually sorting these into relevant categories for news aggregators or personalized feeds is slow, expensive, and prone to human error.
 
-Takes any raw news article as input and predicts its category — **World, Business, Sports, or Technology** — using a trained ML model with real-time confidence scores.
+## 🎯 The Solution: Automated Categorization
 
----
+This project provides an **end-to-end NLP pipeline** that instantly classifies raw text into four core sectors: **World, Business, Sports, and Technology**. By automating this process, platforms can achieve:
 
-## 🧠 ML Pipeline
+  * **Real-time content routing** to specific app sections.
+  * **Improved user experience** through organized news feeds.
+  * **Data-driven insights** into trending topics across industries.
 
-```
-Raw Text → Preprocessing → TF-IDF Vectorization → LinearSVC → Prediction + Confidence
-```
+-----
 
-### Text Preprocessing
-Every article goes through a custom cleaning pipeline before reaching the model:
-- Lowercasing and tokenization
-- Removal of punctuation and numeric tokens
-- Stopword filtering using sklearn's English stopword list
-- Snowball stemming to normalize word forms
+## 🧠 End-to-End ML Pipeline
 
-### TF-IDF Feature Engineering
-- 5000 features extracted from preprocessed text
-- Captures term importance relative to the entire corpus
-- Sparse matrix representation for efficient inference
+I designed the system to handle the journey from **noisy, raw text** to **calibrated probability scores**.
 
-### Model Selection
-8 classifiers were trained and benchmarked before selecting the final model:
+### 1\. Advanced Text Preprocessing
 
-| Model | Selected |
-|---|---|
-| **LinearSVC** | ✅ Best F1 + speed |
-| Logistic Regression | |
-| Multinomial Naive Bayes | |
-| Complement Naive Bayes | |
-| Bernoulli Naive Bayes | |
-| Perceptron | |
-| Ridge Classifier | |
-| SGD Classifier | |
+Standard cleaning wasn't enough; to reach high accuracy, I implemented a custom pipeline:
 
-**Metrics used:** Accuracy, Weighted F1-score, Precision, Confusion Matrix
+  * **Noise Reduction:** Stripping HTML, punctuation, and numeric tokens.
+  * **Normalization:** Lowercasing and Snowball Stemming to reduce words to their root form (e.g., "running" → "run").
+  * **Stopword Filtering:** Leveraging Scikit-learn's optimized list to remove non-informative high-frequency words.
 
-### Confidence Estimation
-LinearSVC does not natively output probabilities — softmax was applied on decision function scores to generate meaningful confidence percentages per class.
+### 2\. Feature Engineering & Selection
 
----
+  * **TF-IDF Vectorization:** Extracted 5,000 top-performing features to represent document importance rather than just word counts.
+  * **Sparse Mapping:** Utilized sparse matrix representations to ensure the model remains lightweight and fast during inference.
 
-## 📊 EDA Highlights
-- Class distribution analysis across 4 categories
-- Top 15 most frequent words per category after preprocessing
-- Visualizations generated with Matplotlib and Seaborn
+### 3\. Model Benchmarking
 
----
+I didn't just pick a model; I conducted a **Grid Search/Tournament** of 8 different classifiers. While **LinearSVC** does not natively support probabilities, it provided the best F1-score. To solve the "confidence" issue, I applied a **Softmax function** over the SVC decision scores.
 
-## 🧪 Tech Stack
+| Model | Performance | Status |
+| :--- | :--- | :--- |
+| **LinearSVC** | **Highest Weighted F1** | ✅ **Selected** |
+| Multinomial NB | Fast, but lower precision | ❌ |
+| Logistic Regression | Reliable, but slower inference | ❌ |
+| SGD Classifier | Good for big data, overkill here | ❌ |
 
-| Layer | Tools |
-|---|---|
-| **ML / NLP** | scikit-learn, NLTK, numpy |
-| **Data** | pandas, AG News dataset |
-| **Visualization** | matplotlib, seaborn |
-| **Backend** | Flask, Gunicorn |
-| **Frontend** | HTML5, CSS3, JavaScript |
-| **Deployment** | Docker, Hugging Face Spaces |
+-----
 
----
+## 🧪 Tech Stack & Deployment
 
-## 📌 Resume-Ready Points
+  * **Core Logic:** `Python`, `Scikit-learn`, `NLTK`, `Pandas`
+  * **Visualization:** `Seaborn` & `Matplotlib` (for class distribution & word frequency EDA)
+  * **Inference Engine:** `Flask` & `Gunicorn`
+  * **Containerization:** `Docker` (ensuring "it works on my machine" translates to "it works in production")
+  * **Hosting:** `Hugging Face Spaces`
 
-- Built end-to-end **NLP classification system** using TF-IDF + LinearSVC
-- Benchmarked **8 ML models** and selected optimal using weighted F1-score
-- Implemented **confidence scores** via softmax on LinearSVC decision function
-- Deployed production ML app using **Flask + Docker on Hugging Face Spaces**
+-----
 
----
+## 📊 Key Results
 
-## 👤 Author
+  * **Accuracy:** Optimized for high precision in the 'Technology' and 'Business' sectors.
+  * **Scalability:** Containerized with Docker, making it ready to be deployed on AWS/GCP/Azure.
+  * **UX:** Integrated a custom-built web UI that shows not just the category, but the **confidence percentage** for transparency.
 
-**Muhammad Zain** — Final year Data Science student, Lahore
+-----
 
-- GitHub: [Zainch032](https://github.com/Zainch032)
-- LinkedIn: [Muhammad Zain](https://linkedin.com/in/muhammad-zain-9710692b4)
-- Hugging Face: [Zainch032](https://huggingface.co/Zainch032)
-- Portfolio: [zainch12.pythonanywhere.com](https://zainch12.pythonanywhere.com)
+## 👤 About the Author
 
----
+**Muhammad Zain** *Final Year Data Science Student | Lahore, Pakistan*
 
-MIT License
-```
+  * [**LinkedIn**](https://linkedin.com/in/muhammad-zain-9710692b4)
+  * [**GitHub**](https://github.com/Zainch032)
+
+-----
